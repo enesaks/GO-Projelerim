@@ -1,15 +1,28 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func main() {
+func main1() {
 	myChanel := make(chan string)
+	done := make(chan bool)
+
+	// go func() {
+	// 	myChanel <- "hello world!"
+	// }()
 
 	go func() {
-		myChanel <- "hello world!"
+		message := <-myChanel
+		fmt.Println(message)
+
+		done <- true
 	}()
 
-	message, isOpen := <-myChanel
+	go func() {
+		myChanel <- "hellooo"
+	}()
 
-	fmt.Println(message, isOpen)
+	<-done //diğeri çalışana kadar bloklıyacak.
+	fmt.Println("End of the main")
 }
